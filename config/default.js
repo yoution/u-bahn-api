@@ -8,17 +8,16 @@ module.exports = {
 
   CASCADE_PAUSE_MS: process.env.CASCADE_PAUSE_MS || 1000,
 
-  AUTH_SECRET: process.env.AUTH_SECRET || 'CLIENT_SECRET',
-  VALID_ISSUERS: process.env.VALID_ISSUERS ? process.env.VALID_ISSUERS.replace(/\\"/g, '')
-    : '["https://topcoder-dev.auth0.com/", "https://api.topcoder.com"]',
+  AUTH_SECRET: process.env.AUTH_SECRET || 'mysecret',
+  VALID_ISSUERS: process.env.VALID_ISSUERS || '["https://api.topcoder-dev.com", "https://api.topcoder.com", "https://topcoder-dev.auth0.com/", "https://auth.topcoder-dev.com/"]',
 
   PAGE_SIZE: process.env.PAGE_SIZE || 20,
   MAX_PAGE_SIZE: parseInt(process.env.MAX_PAGE_SIZE) || 100,
   API_VERSION: process.env.API_VERSION || 'api/1.0',
 
-  DB_NAME: process.env.DB_NAME || 'ubahn-db',
+  DB_NAME: process.env.DB_NAME || 'postgres',
   DB_USERNAME: process.env.DB_USER || 'postgres',
-  DB_PASSWORD: process.env.DB_PASSWORD || 'password',
+  DB_PASSWORD: process.env.DB_PASSWORD || 'postgres',
   DB_HOST: process.env.DB_HOST || 'localhost',
   DB_PORT: process.env.DB_PORT || 5432,
 
