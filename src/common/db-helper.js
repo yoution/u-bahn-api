@@ -115,6 +115,21 @@ async function create (model, entity, auth) {
 }
 
 /**
+ * create object with transaction
+ * @param transaction the transaction object
+ * @param model the sequelize model object
+ * @param entity entity to create
+ * @param auth the user auth object
+ * @returns {Promise<void>}
+ */
+async function createWithTransaction (transaction, model, entity, auth) {
+  if (auth) {
+    entity.createdBy = helper.getAuthUser(auth)
+  }
+  return model.create(entity, {transaction})
+}
+
+/**
  * delete object by pk
  * @param model the sequelize model object
  * @param pk the primary key
@@ -180,6 +195,7 @@ module.exports = {
   createDb,
   find,
   create,
+  createWithTransaction,
   update,
   get,
   remove,

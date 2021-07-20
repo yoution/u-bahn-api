@@ -30,8 +30,11 @@ const uniqueFields = [['handle']]
 async function create (entity, auth) {
   await dbHelper.makeSureUnique(User, entity, uniqueFields)
 
-  const result = await dbHelper.create(User, entity, auth)
-  await serviceHelper.createRecordInEs(resource, result.dataValues)
+  const result = await sequelize.transaction(async (t) => {
+    const userEntity = await dbHelper.createWithTransaction(t, User, entity, auth)
+    await serviceHelper.createRecordInEs(resource, userEntity.dataValues, true)
+    return userEntity
+  })
 
   return result
 }

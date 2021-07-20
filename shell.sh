@@ -1,6 +1,4 @@
 #!/bin/bash
-
-
 export AUTH0_URL=https://topcoder-dev.auth0.com/oauth/token
 export AUTH0_AUDIENCE=https://m2m.topcoder-dev.com/
 export AUTH0_AUDIENCE_UBAHN=https://u-bahn.topcoder.com

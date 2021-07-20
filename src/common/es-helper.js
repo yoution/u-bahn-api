@@ -2,6 +2,7 @@ const config = require('config')
 const _ = require('lodash')
 const querystring = require('querystring')
 const logger = require('../common/logger')
+const helper = require('../common/helper')
 const appConst = require('../consts')
 const esClient = require('./es-client').getESClient()
 
@@ -280,6 +281,32 @@ function escapeRegex (str) {
     .replace(/OR/g, '\\O\\R') // replace OR
     .replace(/NOT/g, '\\N\\O\\T') // replace NOT
   /* eslint-enable no-useless-escape */
+}
+
+
+/**
+ * Process create entity message
+ * @param {Object} message the kafka message
+ * @param {String} transactionId
+ */
+async function processCreate (resource, entity, transactionId) {
+  helper.validProperties(entity, ['id'])
+  await esClient.index({
+    index: DOCUMENTS[resource].index,
+    type: DOCUMENTS[resource].type,
+    id: entity.id,
+    transactionId,
+    body: entity,
+    // body: _.omit(message.payload, ['resource', 'originalTopic']),
+    pipeline: DOCUMENTS[resource].ingest ? DOCUMENTS[resource].ingest.pipeline.id : undefined,
+    refresh: 'wait_for'
+  })
+  if (DOCUMENTS[resource].enrich) {
+    await client.enrich.executePolicy({
+      name: topResources[resource].enrich.policyName,
+      transactionId
+    })
+  }
 }
 
 async function getOrganizationId (handle) {
@@ -1453,6 +1480,7 @@ async function searchAchievementValues ({ organizationId, keyword }) {
 }
 
 module.exports = {
+  processCreate,
   searchElasticSearch,
   getFromElasticSearch,
   searchUsers,

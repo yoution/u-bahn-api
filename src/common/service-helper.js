@@ -38,12 +38,17 @@ const MODEL_TO_RESOURCE = {
  * Create record in es
  * @param resource the resource to create
  * @param result the resource fields
+ * @param toEs is to es directly
  */
-async function createRecordInEs (resource, entity) {
+async function createRecordInEs (resource, entity, toEs) {
   try {
+    if (toEs) {
+      await esHelper.processCreate(resource, entity)
+    }
     await publishMessage('create', resource, entity)
   } catch (err) {
     logger.logFullError(err)
+    throw err
   }
 }
 
